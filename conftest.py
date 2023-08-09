@@ -1,11 +1,11 @@
-from datetime import datetime, timedelta
-
 import pytest
+
+from datetime import datetime, timedelta
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 
-# Импортируем модель новости и комментариев, чтобы создать экземпляры.
+
 from news.models import Comment, News
 
 COMMENT_TEXT = 'Текст комментария'
@@ -13,14 +13,13 @@ NEW_COMMENT_TEXT = 'Обновлённый комментарий'
 
 
 @pytest.fixture
-# Используем встроенную фикстуру для модели пользователей django_user_model.
 def author(django_user_model):
     return django_user_model.objects.create(username='Автор')
 
 
 @pytest.fixture
-def author_client(author, client):  # Вызываем фикстуру автора и клиента.
-    client.force_login(author)  # Логиним автора в клиенте.
+def author_client(author, client):
+    client.force_login(author)
     return client
 
 
@@ -30,8 +29,8 @@ def reader(django_user_model):
 
 
 @pytest.fixture
-def reader_client(reader, client):  # Вызываем фикстуру читателя и клиента.
-    client.force_login(reader)  # Логиним читателя в клиенте.
+def reader_client(reader, client):
+    client.force_login(reader)
     return client
 
 
@@ -42,7 +41,7 @@ def user(django_user_model, client):
 
 @pytest.fixture
 def auth_client(user, client):
-    client.force_login(user)  # Логиним автора в клиенте.
+    client.force_login(user)
     return client
 
 
@@ -56,10 +55,7 @@ def news():
 
 
 @pytest.fixture
-# Фикстура запрашивает другую фикстуру создания новости.
 def news_id_for_args(news):
-    # И возвращает кортеж, который содержит id новости.
-    # На то, что это кортеж, указывает запятая в конце выражения.
     return news.id,
 
 
@@ -85,8 +81,6 @@ def set_news():
         News(
             title=f'Новость {index}',
             text='Просто текст.',
-            # Для каждой новости уменьшаем дату на index дней от today,
-            # где index - счётчик цикла.
             date=today - timedelta(days=index)
         )
         for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1)

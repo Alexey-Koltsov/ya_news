@@ -43,20 +43,21 @@ def test_comments_order(client, news_id_for_args, set_comments, detail_url):
 
 
 @pytest.mark.django_db
-def test_anonymous_client_has_no_form(client, detail_url):
+@pytest.mark.parametrize(
+    'parametrized_client, form_in_context',
+    (
+        (pytest.lazy_fixture('client'), False),
+        (pytest.lazy_fixture('author_client'), True),
+    ),
+)
+def test_client_has_or_not_has_form(
+        parametrized_client, detail_url, form_in_context
+):
     """
-    Анонимному пользователю недоступна форма для отправки комментария
+    Анонимному пользователю недоступна,
+    а авторизованному пользователю доступна
+    форма для отправки комментария
     на странице отдельной новости.
     """
-    response = client.get(detail_url)
-    assert 'form' not in response.context
-
-
-@pytest.mark.django_db
-def test_authorized_client_has_form(client, author_client, detail_url):
-    """
-    Авторизованному пользователю доступна форма для отправки комментария
-    на странице отдельной новости.
-    """
-    response = client.get(detail_url)
-    assert 'form' in response.context
+    response = parametrized_client.get(detail_url)
+    assert ('form' in response.context) is form_in_context

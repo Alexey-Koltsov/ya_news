@@ -1,6 +1,6 @@
-from http import HTTPStatus
-
 import pytest
+
+from http import HTTPStatus
 from pytest_django.asserts import assertFormError, assertRedirects
 
 from conftest import COMMENT_TEXT, NEW_COMMENT_TEXT
